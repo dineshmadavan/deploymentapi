@@ -11,4 +11,5 @@ from flask import Flask
 from deploysDAO import deploys_page
 app = Flask(__name__)
 app.register_blueprint(deploys_page)
-app.run(debug=True)
+if __name__ == '__main__':
+    app.run(debug=True)
