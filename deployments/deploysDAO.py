@@ -4,8 +4,7 @@ __email__ = "dmadavin@gmail.com"
 __status__ = "Production"
 __date__ = "August 5, 2019"
 
-
-import deploys
+from deployments import deploys
 from flask import Blueprint, request
 import time
 
@@ -49,7 +48,7 @@ def getEventsByDuration():
     else:
         fromDateTime = request.args.get('from')
         toDateTime = request.args.get('to')
-        return deploys.getEventsByDateTime(fromDateTime,toDateTime)
+        return deploys.getEventsByDateTime(fromDateTime, toDateTime)
 
 
 @deploys_page.route('/summary')

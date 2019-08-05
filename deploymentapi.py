@@ -8,7 +8,7 @@ __date__ = "August 5, 2019"
 A Simple API to connect to an SQL DB and return values.
 """
 from flask import Flask
-from deploysDAO import deploys_page
+from deployments.deploysDAO import deploys_page
 app = Flask(__name__)
 app.register_blueprint(deploys_page)
 if __name__ == '__main__':

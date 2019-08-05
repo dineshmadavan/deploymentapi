@@ -4,7 +4,7 @@ __email__ = "dmadavin@gmail.com"
 __status__ = "Production"
 __date__ = "August 5, 2019"
 
-from database import Database
+from deployments.database import Database
 import json
 from datetime import datetime,timedelta
 
