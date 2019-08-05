@@ -1,5 +1,6 @@
 from database import Database
 import json
+from flask import jsonify
 from pprint import pprint
 
 class Singleton:
@@ -31,10 +32,17 @@ def getEngineers():
 def getEventsByEngineer(name):
     dbObj = Singleton.getInstance()
     sql = "select id, sha, date, action from deploys where engineer='"+name+"'"
-    print(sql)
     rows = dbObj.query(sql)
-    po=pprint(rows)
     items = []
     for row in rows:
         items.append("id:{0}, sha:{1}, date:{2},action:{3}".format(row[0],row[1],row[2],row[3]))
+    return (json.dumps({'events': items}))
+
+def getEventsByDateTime(fromDateTime,toDateTime):
+    dbObj = Singleton.getInstance()
+    sql = "select id, sha, action, engineer from deploys where date BETWEEN '"+fromDateTime+"' and '"+toDateTime+"'"
+    rows = dbObj.query(sql)
+    items = []
+    for row in rows:
+        items.append("id:{0}, sha:{1}, action:{2}, engineer:{3}".format(row[0],row[1],row[2],row[3]))
     return (json.dumps({'events': items}))

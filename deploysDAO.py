@@ -1,5 +1,5 @@
 import deploys
-from flask import Blueprint
+from flask import Blueprint, request
 
 
 
@@ -9,10 +9,17 @@ def getAllEngineers():
     print("getting engineers")
     return deploys.getEngineers()
 
-@simple_page.route('/events/<string:name>')
+@simple_page.route('/eventsbyengineer/<string:name>')
 def getEvents(name):
     print("getting events for ",name)
     return deploys.getEventsByEngineer(name)
+
+@simple_page.route('/events')
+def getEventsByDuration():
+    fromDateTime = request.args.get('from')
+    toDateTime = request.args.get('to')
+    print("getting events by duration "+fromDateTime+" to "+ toDateTime)
+    return deploys.getEventsByDateTime(fromDateTime,toDateTime)
 
 
 
