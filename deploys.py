@@ -1,3 +1,9 @@
+__author__ = "Dinesh Madavin"
+__version__ = "1.0"
+__email__ = "dmadavin@gmail.com"
+__status__ = "Production"
+__date__ = "August 5, 2019"
+
 from database import Database
 import json
 from datetime import datetime,timedelta
@@ -21,14 +27,24 @@ class Singleton:
             Singleton.__instance = self
 
 def getEngineers():
+    """
+    Get all the distinct engineers
+    :return: List of unique engineer names
+    """
     dbObj=Singleton.getInstance()
     rows=dbObj.get('deploys','engineer')
     items=[]
     for row in rows:
-        items.append(row[0])
+        if(row[0] not in items):
+            items.append(row[0])
     return (json.dumps({'engineers':items}))
 
 def getEventsByEngineer(name):
+    """
+    DB function to retrieve the list of events by an engineer
+    :param name: Name of the engineer to query
+    :return: The list of events performed by the engineer along with the id, sha and date.
+    """
     dbObj = Singleton.getInstance()
     sql = "select id, sha, date, action from deploys where engineer='"+name+"'"
     rows = dbObj.query(sql)
@@ -38,6 +54,12 @@ def getEventsByEngineer(name):
     return (json.dumps({'events': items}))
 
 def getEventsByDateTime(fromDateTime,toDateTime):
+    """
+    Function to get the list of events by date
+    :param fromDateTime: The from date in epoch
+    :param toDateTime: The to date in epoch
+    :return: List of events from the from and to date
+    """
     dbObj = Singleton.getInstance()
     sql = "select id, sha, action, engineer from deploys where date BETWEEN '" + fromDateTime + "' and '" + toDateTime + "'"
     rows = dbObj.query(sql)
