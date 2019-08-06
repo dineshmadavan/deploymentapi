@@ -28,8 +28,11 @@ class MyTest(LiveServerTestCase):
         self.assertEqual(response.code, 200)
 
     def test_events_invalid1(self):
-        response = urllib.request.urlopen(self.get_server_url()+"/events?to=1509050922")
-        self.assertNotEqual(response.code, 200)
+        response=0
+        try:
+            response = urllib.request.urlopen(self.get_server_url()+"/events?to=1509050922").getcode()
+        except:
+            self.assertNotEqual(response, 200)
 
     def test_summary(self):
         response = urllib.request.urlopen(self.get_server_url()+"/summary?date=1509115946")
@@ -40,7 +43,7 @@ class MyTest(LiveServerTestCase):
         response_data=response.read().decode('utf-8')
         self.assertIsNotNone(response_data)
 
-    def test_eventsbyengineer_json(self):
+    def test_eventsbyengineer_json_value(self):
         response = urllib.request.urlopen(self.get_server_url()+"/eventsbyengineer/sajan")
         response_data = response.read().decode('utf-8')
         self.assertIsNotNone(response_data)
@@ -60,3 +63,17 @@ class MyTest(LiveServerTestCase):
         response_data = response.read().decode('utf-8')
         self.assertIn("callista",response_data)
 
+    def test_getallengineers_json_value(self):
+        response = urllib.request.urlopen(self.get_server_url()+"/getallengineers")
+        response_data=response.read().decode('utf-8')
+        self.assertIn("isaac",response_data)
+
+    def test_eventsbyengineer_json_value(self):
+        response = urllib.request.urlopen(self.get_server_url()+"/eventsbyengineer/sajan")
+        response_data = response.read().decode('utf-8')
+        self.assertIn("15096384033449",response_data)
+
+    def test_events_valid_json_value(self):
+        response = urllib.request.urlopen(self.get_server_url()+"/events?from=1509050542&to=1509050922")
+        response_data = response.read().decode('utf-8')
+        self.assertIn("ines",response_data)

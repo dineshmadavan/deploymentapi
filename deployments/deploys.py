@@ -7,6 +7,7 @@ __date__ = "August 5, 2019"
 from deployments.database import Database
 import json
 from datetime import datetime,timedelta
+from flask import jsonify
 
 class Singleton:
     # Here will be the instance stored.
@@ -33,11 +34,7 @@ def getEngineers():
     """
     dbObj=Singleton.getInstance()
     rows=dbObj.get('deploys','engineer')
-    items=[]
-    for row in rows:
-        if(row[0] not in items):
-            items.append(row[0])
-    return (json.dumps({'engineers':items}))
+    return jsonify(events=rows)
 
 def getEventsByEngineer(name):
     """
@@ -48,10 +45,7 @@ def getEventsByEngineer(name):
     dbObj = Singleton.getInstance()
     sql = "select id, sha, date, action from deploys where engineer='"+name+"'"
     rows = dbObj.query(sql)
-    items = []
-    for row in rows:
-        items.append("id:{0}, sha:{1}, date:{2},action:{3}".format(row[0],row[1],row[2],row[3]))
-    return (json.dumps({'events': items}))
+    return jsonify(events=rows)
 
 def getEventsByDateTime(fromDateTime,toDateTime):
     """
@@ -63,10 +57,7 @@ def getEventsByDateTime(fromDateTime,toDateTime):
     dbObj = Singleton.getInstance()
     sql = "select id, sha, action, engineer from deploys where date BETWEEN '" + fromDateTime + "' and '" + toDateTime + "'"
     rows = dbObj.query(sql)
-    items = []
-    for row in rows:
-        items.append("id:{0}, sha:{1}, action:{2}, engineer:{3}".format(row[0],row[1],row[2],row[3]))
-    return (json.dumps({'events': items}))
+    return jsonify(events=rows)
 
 
 def getSummary(todateTime):
@@ -101,6 +92,11 @@ def getSummary(todateTime):
     return (json.dumps({'Summary': items,"Total actions by Engineers":engineers, "Actions Performed":actionsList}))
 
 def addItem(dic, item):
+    """
+    Adding the item to dict for summary. This will be used to format the output for summary
+    :param dic: the dictionary to add/update
+    :param item: the key in question.
+    """
     if(item in dic):
         dic[item]+=1
     else:

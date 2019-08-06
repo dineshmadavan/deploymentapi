@@ -13,7 +13,6 @@ deploys_page = Blueprint('deploys_page', __name__, template_folder='templates')
 @deploys_page.route('/')
 def listApis():
     apis=[]
-
     apis.append("/getallengineers")
     apis.append("/eventsbyengineer/<name>")
     apis.append("/events?from=<epoch_date>&to=<epoch_date>")
@@ -32,7 +31,11 @@ def getAllEngineers():
 
 @deploys_page.route('/eventsbyengineer/<string:name>')
 def getEvents(name):
-    return deploys.getEventsByEngineer(name)
+    ## Validating the input
+    if name.isalpha():
+        return deploys.getEventsByEngineer(name)
+    else:
+        return ('{"Error": "Name is invalid"}'),400
 
 @deploys_page.route('/events')
 def getEventsByDuration():
@@ -43,8 +46,11 @@ def getEventsByDuration():
         to - to time in epoch
     :return: Return the list of events between the from and to date times.
     """
+    ## Validating the input
     if(request.args.get('from') is None or request.args.get('to') is None):
-        return ('{"Error": "From and to date in epoch time is required"}'), 422
+        return ('{"Error": "From and to date in epoch time is required"}'),400
+    elif len(request.args.get('from')) != 10 and len(request.args.get('to')) != 10 and not request.args.get('from').isdigit() and not request.args.get('to').isdigit():
+        return ('{"Error": "From and to date in epoch time is required"}'), 400
     else:
         fromDateTime = request.args.get('from')
         toDateTime = request.args.get('to')
@@ -59,6 +65,7 @@ def getSummary():
         date - the date to get the summary from. In epoch time.
     :return: Return the summary of events for that day.
     """
+    ## Validating the input
     if(request.args.get('date') is None):
         dateTime = int(time.time())
     else:
